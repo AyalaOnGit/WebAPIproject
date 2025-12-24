@@ -1,5 +1,6 @@
 ﻿using Entities;
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using Repository;
 using Services;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -15,8 +16,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddDbContext<db_shopContext>(option=>option.UseSqlServer
-("Data Source = srv2\\pupils; Initial Catalog = 215806571_shop; Integrated Security = True; Trust Server Certificate=True"));
+builder.Services.AddDbContext<db_shopContext>(option=>option.UseSqlServer(builder.Configuration.GetConnectionString("Home")));
+builder.Host.UseNLog();
 
 
 

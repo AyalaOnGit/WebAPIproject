@@ -8,6 +8,6 @@ namespace Repository
         void DeleteUser(int id);
         Task<User> GetUserById(int id);
         Task<User> Login(string email, string passsword);
-        Task UpdateUser(int id, User updatedUser);
+        Task UpdateUser(User updatedUser);
     }
 }

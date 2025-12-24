@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Services;
-using Entities;
+using DTOs;
 using Repository;
 
 
@@ -24,9 +24,9 @@ namespace WebAPIShop.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Category>>> Get() 
+        public async Task<ActionResult<List<CategoryDTO>>> Get() 
         {
-            List<Category> categories = await _categoryService.GetCategories();
+            List<CategoryDTO> categories = await _categoryService.GetCategories();
             if(categories != null)
             {
                 return Ok(categories);
