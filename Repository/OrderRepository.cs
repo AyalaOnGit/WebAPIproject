@@ -20,7 +20,8 @@ namespace Repository
         }
         public async Task<Order> GetOrderById(int id)
         {
-            return await _ShopContext.FindAsync<Order>(id);
+            //return await _ShopContext.FindAsync<Order>(id);
+            return await _ShopContext.Orders.Include(o => o.OrderItems).FirstOrDefaultAsync(o => o.OrderId == id);
         }
 
     }

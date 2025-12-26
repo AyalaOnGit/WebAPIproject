@@ -15,7 +15,7 @@ namespace Repository
 
         public async Task<List<Product>> GetProducts(string? name, int[]? categories, int? nimPrice, int? maxPrice, int? limit, string? orderBy, int? offset)
         {
-            return await _ShopContext.Products.ToListAsync();
+            return await _ShopContext.Products.Include(p=>p.Category).ToListAsync();
         }
         
     }

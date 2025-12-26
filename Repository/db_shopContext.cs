@@ -8,6 +8,10 @@ namespace Repository;
 
 public partial class db_shopContext : DbContext
 {
+    public db_shopContext()
+    {
+        
+    }
     public db_shopContext(DbContextOptions<db_shopContext> options)
         : base(options)
     {
