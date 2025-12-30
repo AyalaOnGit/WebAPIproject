@@ -4,13 +4,9 @@ using Moq.EntityFrameworkCore;
 using Repository;
 namespace TestProject1
 {
-    public class CategoryRepositoryTest
+    public class CategoryRepositoryUnitTest
     {
         [Fact]
-        //public void Test1()
-        //{
-
-        //}
         public async Task GetCategory_ValidCredentials_ReturnsCategory()
         {
             // Arrange
@@ -28,6 +24,25 @@ namespace TestProject1
 
             // Assert
             Assert.Equal(categories, result);
+        }
+
+        [Fact]
+        public async Task GetCategories_WhenEmpty_ReturnsNoItems()
+        {
+            // Arrange
+            var categories = new List<Category>(); // Empty list
+
+            var mockContext = new Mock<db_shopContext>();
+            mockContext.Setup(x => x.Categories).ReturnsDbSet(categories);
+
+            var categoryRepository = new CategoryRepository(mockContext.Object);
+
+            // Act
+            var result = await categoryRepository.GetCategories();
+
+            // Assert
+            Assert.Empty(result);     // אין פריטים = NOITEM
+            Assert.NotNull(result);  // לא null          
         }
     }
 }

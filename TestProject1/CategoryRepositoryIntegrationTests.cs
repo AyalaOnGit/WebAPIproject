@@ -1,0 +1,25 @@
+﻿using Repository;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TestProject1
+{
+    public class CategoryRepositoryIntegrationTests :ICollectionFixture<DatabaseFixture> 
+    {
+        private readonly db_shopContext _dbContext;
+        private readonly UserRepository _userRepository;
+        public CategoryRepositoryIntegrationTests(DatabaseFixture databaseFixture)
+        {
+            _dbContext = databaseFixture.Context;
+            _userRepository = new UserRepository(_dbContext);
+        }
+        public void Dispose()
+        {
+            // Clean up resources if needed
+        }
+
+        }
+    }

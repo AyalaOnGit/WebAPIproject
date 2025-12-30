@@ -16,7 +16,7 @@ namespace Repository
         {
             await _ShopContext.Orders.AddAsync(oreder);
             await _ShopContext.SaveChangesAsync();
-            return await _ShopContext.FindAsync<Order>(oreder.OrderId);
+            return oreder;
         }
         public async Task<Order> GetOrderById(int id)
         {

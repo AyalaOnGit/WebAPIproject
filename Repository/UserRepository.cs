@@ -13,10 +13,6 @@ namespace Repository
             _ShopContext = ShopContext;
         }
 
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
 
         public async Task<User> GetUserById(int id)
         {
@@ -28,7 +24,7 @@ namespace Repository
         {
             await _ShopContext.Users.AddAsync(user);
             await _ShopContext.SaveChangesAsync(); 
-            return await _ShopContext.Users.FindAsync(user.UserId);
+            return user;
         }
 
 

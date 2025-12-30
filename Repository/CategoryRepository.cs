@@ -16,7 +16,6 @@ namespace Repository
         {
             return await _ShopContext.Categories.ToListAsync();
         }
-
     
     }
 }
