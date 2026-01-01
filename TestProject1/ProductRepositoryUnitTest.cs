@@ -35,8 +35,8 @@ namespace TestProject1
             var result = await productRepository.GetProducts(null, null, null, null, null, null, null);
 
             // Assert
-            Assert.Equal(2, result.Count);
-            Assert.All(result, p => Assert.NotNull(p.Category));
+            Assert.Equal(2, result.TotalCount);
+            Assert.All(result.Items, p => Assert.NotNull(p.Category));
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace TestProject1
             var result = await productRepository.GetProducts(null, null, null, null, null, null, null);
 
             // Assert
-            Assert.Empty(result);
+            Assert.Empty(result.Items);
         }
     }
 }

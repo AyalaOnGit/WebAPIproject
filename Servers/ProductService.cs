@@ -17,9 +17,23 @@ public class ProductService : IProductService
         _mapper = mapper;
     }
    
-    public async Task<List<ProductDTO>> GetProducts(string? name, int[]? categories, int? nimPrice, int? maxPrice, int? limit, string? orderBy, int? offset)
+    public async Task<PageResponseDTO<ProductDTO>> GetProducts(string? description, int[]? categories, int? minPrice, int? maxPrice, int? skip, string? orderBy, int? position)
     {
-        return _mapper.Map < List<Product>, List<ProductDTO> >(await _productRepository.GetProducts( name, categories,  nimPrice, maxPrice,  limit,  orderBy, offset));
+        (List<Product> Items, int TotalCount) = await _productRepository.GetProducts(description, categories, minPrice, maxPrice, skip, orderBy, position);
+        List<ProductDTO> ItemsDTO = _mapper.Map < List<Product>, List<ProductDTO> >(Items);     
+        var currentPage = (position ?? 1);
+        var pageSize = skip ?? 10;
+        PageResponseDTO<ProductDTO> responseDTO = new PageResponseDTO<ProductDTO>()
+        {
+            Data = ItemsDTO,
+            TotalItems = TotalCount,
+            CurrentPage = currentPage,
+            PageSize = pageSize,
+            HasPreviousPage = currentPage > 1,
+            HasNextPage = (currentPage * pageSize) < TotalCount
+        };
+        return responseDTO;
+
     }
 
 }

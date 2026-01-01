@@ -9,26 +9,47 @@ using System.Threading.Tasks;
 
 namespace TestProject1
 {
-    public class OrderRepositoryIntegrationTests : IClassFixture<DatabaseFixture>
+    [Collection("Database collection")]
+    public class OrderRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IAsyncLifetime
     {
         private readonly db_shopContext _dbContext;
         private readonly OrderRepository _orderRepository;
+        private readonly DatabaseFixture _fixture;
         public OrderRepositoryIntegrationTests(DatabaseFixture databaseFixture)
         {
             _dbContext = databaseFixture.Context;
             _orderRepository = new OrderRepository(_dbContext);
+            _fixture = databaseFixture;
+        }
+
+        public async Task InitializeAsync()
+        {
+            // מחיקת רשומות בכל הטבלאות לפי סדר תלות (Foreign Keys)
+            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
+            _dbContext.Orders.RemoveRange(_dbContext.Orders);
+            _dbContext.Products.RemoveRange(_dbContext.Products);
+            _dbContext.Categories.RemoveRange(_dbContext.Categories);
+            _dbContext.Users.RemoveRange(_dbContext.Users);
+
+            // שמירת השינויים
+            await _dbContext.SaveChangesAsync();
+        }
+        public Task DisposeAsync()
+        {
+            // כאן הקוד שרץ אחרי כל טסט (TearDown)
+            return Task.CompletedTask;
         }
 
         [Fact]
         public async Task GetOrders_WhenDataExists_ReturnsAllOrders()
         {
             // Arrange
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            _dbContext.Products.RemoveRange(_dbContext.Products);
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Categories.RemoveRange(_dbContext.Categories);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //_dbContext.Products.RemoveRange(_dbContext.Products);
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Categories.RemoveRange(_dbContext.Categories);
+            //await _dbContext.SaveChangesAsync();
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", Password = "password!@#" };
             var category = new Category { CategoryName = "General" };
             await _dbContext.Users.AddAsync(user);
@@ -61,9 +82,9 @@ namespace TestProject1
         public async Task GetOrders_ReturnsNull_WhenNoDataExists()
         {
             // Arrange
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //await _dbContext.SaveChangesAsync();
             // Act
             var result = await _orderRepository.GetOrderById(9999); // Assuming 9999 is a non-existent OrderId
             // Assert
@@ -74,12 +95,12 @@ namespace TestProject1
         public async Task AddOrder_PersistsOrderAndItemsToDatabase()
         {
             // Arrange
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            _dbContext.Products.RemoveRange(_dbContext.Products);
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Categories.RemoveRange(_dbContext.Categories);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //_dbContext.Products.RemoveRange(_dbContext.Products);
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Categories.RemoveRange(_dbContext.Categories);
+            //await _dbContext.SaveChangesAsync();
             var user = new User { UserFirstName = "TestUser", UserEmail = "TestUser@.com", Password = "password!@#" };
             var category = new Category { CategoryName = "General" };
             await _dbContext.Users.AddAsync(user);

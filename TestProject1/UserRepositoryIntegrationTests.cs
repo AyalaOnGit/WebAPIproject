@@ -9,21 +9,42 @@ using System.Threading.Tasks;
 
 namespace TestProject1
 {
-    public class UserRepositoryIntegrationTests : IClassFixture<DatabaseFixture>
+    [Collection("Database collection")]
+    public class UserRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IAsyncLifetime
     {
         private readonly db_shopContext _dbContext;
         private readonly UserRepository _userRepository;
+        private readonly DatabaseFixture _fixture;
         public UserRepositoryIntegrationTests(DatabaseFixture databaseFixture) {
             _dbContext = databaseFixture.Context;
             _userRepository = new UserRepository(_dbContext);
+            _fixture = databaseFixture;
+        }
+
+        public async Task InitializeAsync()
+        {
+            // מחיקת רשומות בכל הטבלאות לפי סדר תלות (Foreign Keys)
+            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
+            _dbContext.Orders.RemoveRange(_dbContext.Orders);                   
+            _dbContext.Products.RemoveRange(_dbContext.Products);
+            _dbContext.Categories.RemoveRange(_dbContext.Categories);
+            _dbContext.Users.RemoveRange(_dbContext.Users);         
+
+            // שמירת השינויים
+            await _dbContext.SaveChangesAsync();
+        }
+        public Task DisposeAsync()
+        {
+            // כאן הקוד שרץ אחרי כל טסט (TearDown)
+            return Task.CompletedTask;
         }
 
         [Fact]
         public async Task GetUserById_WhenUserExists_ReturnsUser()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
             var testUser = new User { UserFirstName = "Bob",UserLastName="mom" ,UserEmail = "Bob@.com",Password = "Bob@.com!@" };
             await _dbContext.Users.AddAsync(testUser);
             await _dbContext.SaveChangesAsync();
@@ -38,9 +59,9 @@ namespace TestProject1
         public async Task GetUserById_WhenUserDoesNotExist_ReturnsNull()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //await _dbContext.SaveChangesAsync();
             // Act
             var result = await _userRepository.GetUserById(9999); // Assuming 9999 does not exist
             // Assert
@@ -51,8 +72,8 @@ namespace TestProject1
         public async Task Login_ReturnsCorrectUser_WhenCredentialsMatch()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
             var user = new User { UserFirstName = "Charlie", UserLastName = "shwartz", UserEmail = "Charlie@.com", Password = "Charlie@.com!@" };
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
@@ -68,8 +89,8 @@ namespace TestProject1
         public async Task Login_ReturnsNull_WhenCredentialsAreIncorrect()
         { 
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
             var testUser = new User { UserFirstName = "Alice",UserLastName="cohen", UserEmail = "Alice@.com", Password= "Alice@.com!@" };
             await _dbContext.Users.AddAsync(testUser);
             await _dbContext.SaveChangesAsync();
@@ -83,9 +104,9 @@ namespace TestProject1
         public async Task AddUser_AddsUserSuccessfully()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //await _dbContext.SaveChangesAsync();
             var newUser = new User { UserFirstName = "David",UserLastName="levi", UserEmail = "David@.com", Password= "David@.com!@" };
             // Act
             var addedUser = await _userRepository.AddUser(newUser);
@@ -117,9 +138,9 @@ namespace TestProject1
         public async Task UpdateUser_UpdatesUserSuccessfully()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //await _dbContext.SaveChangesAsync();
             var existingUser = new User { UserFirstName = "Frank", UserLastName = "perez", UserEmail = "Frank@.com", Password = "Frank@.com!@" };
             await _dbContext.Users.AddAsync(existingUser);
             await _dbContext.SaveChangesAsync();
@@ -148,9 +169,9 @@ namespace TestProject1
         public async Task UpdateUser_NonExistentUser_ThrowsException()
         {
             // Arrange
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            await _dbContext.SaveChangesAsync();
+            //_dbContext.Users.RemoveRange(_dbContext.Users);
+            //_dbContext.Orders.RemoveRange(_dbContext.Orders);
+            //await _dbContext.SaveChangesAsync();
             var nonExistentUser = new Entities.User { UserId = 9999, UserFirstName = "Ghost", UserEmail = "ghost@.com" };
             // Act & Assert
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () => await _userRepository.UpdateUser(nonExistentUser));
