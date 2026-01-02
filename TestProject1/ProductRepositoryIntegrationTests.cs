@@ -8,43 +8,25 @@ using System.Threading.Tasks;
 
 namespace TestProject1
 {
-    [Collection("Database collection")]
-    public class ProductRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IAsyncLifetime
+    public class ProductRepositoryIntegrationTests : IDisposable
     {
         private readonly db_shopContext _dbContext;
         private readonly ProductRepository _productRepository;
         private readonly DatabaseFixture _fixture;
-        public ProductRepositoryIntegrationTests(DatabaseFixture databaseFixture)
+        public ProductRepositoryIntegrationTests()
         {
-            _dbContext = databaseFixture.Context;
+            _fixture = new DatabaseFixture();
+            _dbContext = _fixture.Context;
             _productRepository = new ProductRepository(_dbContext);
-            _fixture = databaseFixture;
         }
-        public async Task InitializeAsync()
+        public void Dispose()
         {
-            // מחיקת רשומות בכל הטבלאות לפי סדר תלות (Foreign Keys)
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            _dbContext.Products.RemoveRange(_dbContext.Products);
-            _dbContext.Categories.RemoveRange(_dbContext.Categories);
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-
-            // שמירת השינויים
-            await _dbContext.SaveChangesAsync();
-        }
-        public Task DisposeAsync()
-        {
-            // כאן הקוד שרץ אחרי כל טסט (TearDown)
-            return Task.CompletedTask;
-        }
+            _fixture.Dispose();
+        }        
 
         [Fact]
         public async Task GetProducts_WhenDataExists_ReturnsAllProductsWithCategory()
         {
-            // Arrange
-            //_dbContext.Products.RemoveRange(_dbContext.Products);
-            //_dbContext.Categories.RemoveRange(_dbContext.Categories);
-            //await _dbContext.SaveChangesAsync();
             var category = new Category { CategoryName = "TestCategory" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
@@ -70,9 +52,6 @@ namespace TestProject1
         [Fact]
         public async Task GetProducts_ReturnsEmpty_WhenNoDataExists()
         {
-            // Arrange
-            //_dbContext.Products.RemoveRange(_dbContext.Products);
-            //await _dbContext.SaveChangesAsync();
             // Act
             var result = await _productRepository.GetProducts(null, null, null, null, null, null, null);
             // Assert

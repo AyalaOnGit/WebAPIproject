@@ -15,16 +15,15 @@ namespace TestProject1
 
             public DatabaseFixture()
             {
-
+                var dbName = $"TestDb_{Guid.NewGuid()}";
                 // Set up the test database connection and initialize the context
                 var options = new DbContextOptionsBuilder<db_shopContext>()
 
-                    .UseSqlServer("Data Source=DESKTOP-682T053;Initial Catalog=215806571_shop_Test;Integrated Security=True;Trust Server Certificate=True")
-                    .Options;
-                Context = new db_shopContext(options);
-                Context.Database.EnsureCreated();
-            }
-
+                        .UseSqlServer($"Data Source=DESKTOP-682T053;Initial Catalog={dbName};Integrated Security=True;Trust Server Certificate=True")
+                        .Options;
+                    Context = new db_shopContext(options);
+                    Context.Database.EnsureCreated();
+            }    
             public void Dispose()
             {
                 // Clean up the test database after all tests are completed

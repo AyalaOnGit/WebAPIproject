@@ -8,42 +8,25 @@ using System.Threading.Tasks;
 
 namespace TestProject1
 {
-    [Collection("Database collection")]
-    public class CategoryRepositoryIntegrationTests : IClassFixture<DatabaseFixture>, IAsyncLifetime
+    public class CategoryRepositoryIntegrationTests : IDisposable
     {
         private readonly db_shopContext _dbContext;
         private readonly CategoryRepository _categoryRepository;
         private readonly DatabaseFixture _fixture;
-
-        public CategoryRepositoryIntegrationTests(DatabaseFixture databaseFixture)
+        public CategoryRepositoryIntegrationTests()
         {
-            _dbContext = databaseFixture.Context;
+            _fixture = new DatabaseFixture();
+            _dbContext = _fixture.Context;
             _categoryRepository = new CategoryRepository(_dbContext);
-            _fixture = databaseFixture;
         }
-        public async Task InitializeAsync()
+        public void Dispose() 
         {
-            // מחיקת רשומות בכל הטבלאות לפי סדר תלות (Foreign Keys)
-            _dbContext.OrderItems.RemoveRange(_dbContext.OrderItems);
-            _dbContext.Orders.RemoveRange(_dbContext.Orders);
-            _dbContext.Products.RemoveRange(_dbContext.Products);
-            _dbContext.Categories.RemoveRange(_dbContext.Categories);
-            _dbContext.Users.RemoveRange(_dbContext.Users);
-
-            // שמירת השינויים
-            await _dbContext.SaveChangesAsync();
+            _fixture.Dispose();
         }
-        public Task DisposeAsync()
-        {
-            // כאן הקוד שרץ אחרי כל טסט (TearDown)
-            return Task.CompletedTask;
-        }
-
+        
         [Fact]
         public async Task GetCategories_WhenDataExists_ReturnsAllCategories()
         {
-            // Arrange
-            //_dbContext.Categories.RemoveRange(_dbContext.Categories);
             var testCategories = new List<Category>
             {
                 new Category { CategoryName = "Electronics" },
@@ -66,9 +49,6 @@ namespace TestProject1
         [Fact]
         public async Task GetCategories_ReturnsEmpty_WhenNoDataExists()
         {             
-            // Arrange
-            //_dbContext.Categories.RemoveRange(_dbContext.Categories);
-            //await _dbContext.SaveChangesAsync();
             // Act
             var result = await _categoryRepository.GetCategories();
             // Assert

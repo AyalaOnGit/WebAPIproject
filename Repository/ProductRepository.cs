@@ -19,7 +19,7 @@ namespace Repository
                         (description == null ? (true) : (product.Description.Contains(description)))
                         && ((minPrice == null) ? (true) : (product.Price >= minPrice))
                         && ((maxPrice == null) ? (true) : (product.Price <= maxPrice))
-                        && ((categories.Length==0) ? (true) : (categories.Contains(product.CategoryId))))
+                        && ((categories == null || categories.Length==0) ? (true) : (categories.Contains(product.CategoryId))))
                         .OrderBy(product => product.Price);
             var position1 = position ?? 1;
             var skip1 = skip ?? 10;
@@ -28,8 +28,6 @@ namespace Repository
                                     .Take(skip1).Include(product => product.Category).ToListAsync();
             var total = await query.CountAsync();
             return (products, total);
-
         }
-
     }
 }
