@@ -20,7 +20,7 @@ public class ProductService : IProductService
     public async Task<PageResponseDTO<ProductDTO>> GetProducts(string? description, int[]? categories, int? minPrice, int? maxPrice, int? skip, string? orderBy, int? position)
     {
         (List<Product> Items, int TotalCount) = await _productRepository.GetProducts(description, categories, minPrice, maxPrice, skip, orderBy, position);
-        List<ProductDTO> ItemsDTO = _mapper.Map < List<Product>, List<ProductDTO> >(Items);     
+        List<ProductDTO> ItemsDTO = _mapper.Map<List<Product>, List<ProductDTO>>(Items);     
         var currentPage = (position ?? 1);
         var pageSize = skip ?? 10;
         PageResponseDTO<ProductDTO> responseDTO = new PageResponseDTO<ProductDTO>()
@@ -33,7 +33,6 @@ public class ProductService : IProductService
             HasNextPage = (currentPage * pageSize) < TotalCount
         };
         return responseDTO;
-
     }
 
 }
