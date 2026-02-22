@@ -1,21 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
 using Services;
 using DTOs;
 using Repository;
 
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace WebAPIShop.Controllers
 {
-
-
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-
         private readonly ICategoryService _categoryService;
 
         public CategoriesController(ICategoryService categoryService) 
@@ -27,12 +20,11 @@ namespace WebAPIShop.Controllers
         public async Task<ActionResult<List<CategoryDTO>>> Get() 
         {
             List<CategoryDTO> categories = await _categoryService.GetCategories();
-            if(categories != null)
+            if (categories != null)
             {
                 return Ok(categories);
             }
             return NoContent();
         }
- 
     }
 }

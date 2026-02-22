@@ -50,10 +50,6 @@ public class UserService : IUserService
     }
     public async Task<UserDTO> Login(LoginUserDTO loginUser)
     {
-        return _mapper.Map<User, UserDTO>(await _userRepository.Login(loginUser.UserEmail,loginUser.UserPassword));
+        return _mapper.Map<User, UserDTO>(await _userRepository.Login(loginUser.UserEmail, loginUser.UserPassword));
     }
-    //public void DeleteUser(int id)
-    //{
-    //    _userRepository.DeleteUser(id);
-    //}
 }
