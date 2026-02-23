@@ -64,11 +64,10 @@ public class UserService : IUserService
     public async Task<bool> EmailExists(string email,int id)
     {
         User user = await _userRepository.GetUserByEmail(email);
-        if (user.UserId!=id && user != null)
+        if (user != null && user.UserId!=id)
         {
             return true;
         }
         return false;
     }
-
 }

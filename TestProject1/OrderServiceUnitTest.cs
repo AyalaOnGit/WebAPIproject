@@ -16,107 +16,96 @@ namespace TestProject1
 {
     public class OrderServiceUnitTest
     {
-        [Fact]
-        public async Task AddOrder_WhenSumIsIncorrect_ShouldUpdateSum()
+        private readonly Mock<IOrderRepository> _orderRepositoryMock;
+        private readonly Mock<IProductRepository> _productRepositoryMock;
+        private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<ILogger<OrderService>> _loggerMock;
+        private readonly OrderService _orderService;
+
+        public OrderServiceUnitTest()
         {
-            // Arrange
-            var mockProductRepo = new Mock<IProductRepository>();
-            var mockOrderRepo = new Mock<IOrderRepository>();
-            var mockMapper = new Mock<IMapper>();
-            var mockLogger = new Mock<ILogger<OrderService>>();
+            _orderRepositoryMock = new Mock<IOrderRepository>();
+            _productRepositoryMock = new Mock<IProductRepository>();
+            _mapperMock = new Mock<IMapper>();
+            _loggerMock = new Mock<ILogger<OrderService>>();
 
-            // מחיר מוצר = 100
-            mockProductRepo.Setup(r => r.GetProductById(3))
-                           .ReturnsAsync(new Product { ProductId = 3, Price = 100 });
-
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var orderItems = new List<OrderItemDTO> { new OrderItemDTO(3, 2) };
-
-            // הלקוח שלח סכום 50 (אמור להיות 200)
-            var inputOrderDto = new OrderDTO(today, 0, 50.0, orderItems, 1);
-
-            // הגדרת המיפויים
-            var orderEntity = new Order { OrderSum = 50 };
-            mockMapper.Setup(m => m.Map<OrderDTO, Order>(It.IsAny<OrderDTO>())).Returns(orderEntity);
-            mockOrderRepo.Setup(r => r.AddOrder(It.IsAny<Order>())).ReturnsAsync(orderEntity);
-
-            // 1. הגדרת המיפוי מ-DTO ל-Entity
-            // אנחנו רוצים שה-Entity שנוצר יקבל את הסכום המעודכן מה-DTO
-            mockMapper.Setup(m => m.Map<OrderDTO, Order>(It.IsAny<OrderDTO>()))
-                       .Returns((OrderDTO dto) => new Order
-                       {
-                           UserId = dto.UserId,
-                           OrderSum = dto.OrderSum // כאן עובר ה-200 המעודכן
-                       });
-
-            // 2. הגדרת ה-Repository
-            // במקום להחזיר אובייקט קבוע, נחזיר את מה שהתקבל בפונקציה (שכולל את הסכום המעודכן)
-            mockOrderRepo.Setup(r => r.AddOrder(It.IsAny<Order>()))
-                         .ReturnsAsync((Order o) => o);
-
-            // 3. הגדרת המיפוי חזור ל-DTO
-            // המפר יקח את ה-Entity (עם ה-200) ויהפוך אותו ל-DTO סופי
-            mockMapper.Setup(m => m.Map<Order, OrderDTO>(It.IsAny<Order>()))
-                       .Returns((Order src) => new OrderDTO(today, 0, src.OrderSum, orderItems, 1));
-            // החלפתי בין ה-Product ל-Order
-            var orderService = new OrderService(
-                mockOrderRepo.Object,
-                mockMapper.Object,    
-                mockProductRepo.Object,  
-                mockLogger.Object
+            _orderService = new OrderService(
+                _orderRepositoryMock.Object,
+                _mapperMock.Object,
+                _productRepositoryMock.Object,
+                _loggerMock.Object
             );
-
-            // Act
-            var result = await orderService.AddOrder(inputOrderDto);
-
-            // Assert
-            // הבדיקה החשובה: האם הסכום הסופי הוא 200?
-            Assert.Equal(200, result.OrderSum);
         }
 
         [Fact]
-        public async Task AddOrder_WhenSumIsCorrect_ShouldReturnSameSumAndNotLogWarning()
+        public async Task AddOrder_SumIsCorrect_ReturnsOrderDto()
         {
-            // Arrange
-            var mockProductRepo = new Mock<IProductRepository>();
-            var mockOrderRepo = new Mock<IOrderRepository>();
-            var mockMapper = new Mock<IMapper>();
-            var mockLogger = new Mock<ILogger<OrderService>>();
+            // Arrange - Happy Path
+            var items = new List<OrderItemDTO> { new OrderItemDTO(1, 2) }; // בהנחה שהסדר הוא ID, ProductId, Quantity
+            OrderDTO orderDto = new OrderDTO(DateOnly.FromDateTime(DateTime.Now), 0, 100, items, 1);
 
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var orderItems = new List<OrderItemDTO> { new OrderItemDTO(3, 2) };
+            Product product = new Product { ProductId = 1, Price = 50 };
+            Order orderEntity = new Order { OrderSum = 100 };
+            OrderDTO savedOrderDto = new OrderDTO(DateOnly.FromDateTime(DateTime.Now), 1, 100, items, 1);
 
-            // מוצר עולה 100 (100 * 2 = 200)
-            mockProductRepo.Setup(r => r.GetProductById(3))
-                           .ReturnsAsync(new Product { ProductId = 3, Price = 100 });
 
-            // הלקוח שלח 200 (סכום תקין)
-            var inputOrderDto = new OrderDTO(today, 0, 200.0, orderItems, 1);
-
-            mockMapper.Setup(m => m.Map<OrderDTO, Order>(It.IsAny<OrderDTO>()))
-                       .Returns((OrderDTO dto) => new Order { UserId = dto.UserId, OrderSum = dto.OrderSum });
-
-            mockOrderRepo.Setup(r => r.AddOrder(It.IsAny<Order>()))
-                         .ReturnsAsync((Order o) => o);
-
-            mockMapper.Setup(m => m.Map<Order, OrderDTO>(It.IsAny<Order>()))
-                       .Returns((Order src) => new OrderDTO(today, 0, src.OrderSum, orderItems, 1));
-
-            var orderService = new OrderService(mockOrderRepo.Object, mockMapper.Object, mockProductRepo.Object, mockLogger.Object);
+            _productRepositoryMock.Setup(r => r.GetProductById(1)).ReturnsAsync(product);
+            _mapperMock.Setup(m => m.Map<OrderDTO, Order>(It.IsAny<OrderDTO>())).Returns(orderEntity);
+            _orderRepositoryMock.Setup(r => r.AddOrder(orderEntity)).ReturnsAsync(orderEntity);
+            _mapperMock.Setup(m => m.Map<Order, OrderDTO>(orderEntity)).Returns(savedOrderDto);
 
             // Act
-            var result = await orderService.AddOrder(inputOrderDto);
+            var result = await _orderService.AddOrder(orderDto);
 
             // Assert
-            Assert.Equal(200, result.OrderSum);
+            Assert.NotNull(result);
+            Assert.Equal(100, result.OrderSum);
 
-            // בדיקה שהלוגר מעולם לא הופעל (כי הסכום היה תקין)
-            mockLogger.Verify(l => l.Log(
+            // בדיקה שהלוגר מעולם לא הופעל 
+            _loggerMock.Verify(l => l.Log(
                 LogLevel.Warning,
                 It.IsAny<EventId>(),
                 It.IsAny<It.IsAnyType>(),
                 null,
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task AddOrder_SumMismatch_CorrectsSumAndLogsWarning()
+        {
+            // Arrange - Unhappy Path
+            var items = new List<OrderItemDTO> { new OrderItemDTO(1, 2) };
+            OrderDTO orderDto = new OrderDTO(DateOnly.FromDateTime(DateTime.Now), 0, 50, items, 1);
+
+            var product = new Product { ProductId = 1, Price = 60 };
+            var orderEntity = new Order();
+            OrderDTO savedOrderDto = new OrderDTO(DateOnly.FromDateTime(DateTime.Now), 1, 120, items, 1);
+
+            _productRepositoryMock.Setup(r => r.GetProductById(1)).ReturnsAsync(product);
+
+            // כאן אנחנו מוודאים שה-Mapper מקבל אובייקט שהסכום שלו כבר תוקן ל-120
+            _mapperMock.Setup(m => m.Map<OrderDTO, Order>(It.Is<OrderDTO>(o => o.OrderSum == 120)))
+                       .Returns(orderEntity);
+
+            _orderRepositoryMock.Setup(r => r.AddOrder(orderEntity)).ReturnsAsync(orderEntity);
+            _mapperMock.Setup(m => m.Map<Order, OrderDTO>(orderEntity)).Returns(savedOrderDto);
+
+            // Act
+            var result = await _orderService.AddOrder(orderDto);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(120, result.OrderSum);
+
+            // בדיקה שהלוגר אכן הופעל
+            _loggerMock.Verify(
+                x => x.Log(
+                    LogLevel.Warning,
+                    It.IsAny<EventId>(),
+                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Order sum mismatch")),
+                    It.IsAny<Exception>(),
+                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
+                Times.Once);
         }
     }
 }
