@@ -29,5 +29,9 @@ namespace Repository
             var total = await query.CountAsync();
             return (products, total);
         }
+        public async Task<Product> GetProductById(int id)
+        {
+            return await _ShopContext.Products.FindAsync(id);
+        }
     }
 }

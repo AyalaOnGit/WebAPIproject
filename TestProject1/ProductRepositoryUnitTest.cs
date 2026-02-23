@@ -54,5 +54,54 @@ namespace TestProject1
             // Assert
             Assert.Empty(result.Items);
         }
+
+        [Fact]
+        public async Task GetProductById_ProductExists_ReturnsProduct()
+        {
+            // Arrange
+            var productId = 10;
+            var expectedProduct = new Product { ProductId = productId, ProductName = "Gaming Chair", Price = 1200 };
+            var products = new List<Product> { expectedProduct };
+
+            var mockContext = new Mock<db_shopContext>();
+
+            mockContext.Setup(x => x.Products).ReturnsDbSet(products);
+
+            mockContext.Setup(x => x.Products.FindAsync(productId))
+                       .ReturnsAsync(expectedProduct);
+
+            var repository = new ProductRepository(mockContext.Object);
+
+            // Act
+            var result = await repository.GetProductById(productId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(productId, result.ProductId);
+        }
+
+        [Fact]
+        public async Task GetProductById_ProductDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            var products = new List<Product>
+            {
+                new Product { ProductId = 1, ProductName = "Laptop" }
+            };
+
+            var mockContext = new Mock<db_shopContext>();
+            mockContext.Setup(x => x.Products).ReturnsDbSet(products);
+
+            mockContext.Setup(x => x.Products.FindAsync(99))
+                       .ReturnsAsync((Product)null);
+
+            var repository = new ProductRepository(mockContext.Object);
+
+            // Act
+            var result = await repository.GetProductById(99);
+
+            // Assert
+            Assert.Null(result);
+        }
     }
 }

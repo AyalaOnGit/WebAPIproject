@@ -7,10 +7,10 @@ namespace Services
 {
     public interface IUserService
     {
-        Task<UserDTO> AddUser(UserDTO user,string password);
-        //void DeleteUser(int id);
+        Task<ResultValidUser<UserDTO>> AddUser(UserDTO user,string password);
         Task<UserDTO> GetUserById(int id);
         Task<UserDTO> Login(LoginUserDTO loginUser);
-        Task<bool> UpdateUser(int id, UserDTO user,string password);
+        Task<ResultValidUser<bool>> UpdateUser(int id, UserDTO user,string password);
+        Task<bool> EmailExists(string email,int id);
     }
 }

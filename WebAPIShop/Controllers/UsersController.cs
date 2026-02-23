@@ -32,10 +32,12 @@ namespace WebAPIShop.Controllers
         [HttpPost]
         public async Task<ActionResult<UserDTO>> Post([FromBody] UserDTO user, string password)
         {
-            UserDTO createdUser = await _userService.AddUser(user, password);
-            if (createdUser != null)
-                return CreatedAtAction(nameof(Get), new { id = createdUser.UserId }, createdUser);
-            return BadRequest("Password is not strong enough");
+            ResultValidUser<UserDTO> createdUser = await _userService.AddUser(user, password);
+            if (createdUser.data!=null)
+                return CreatedAtAction(nameof(Get), new { id = createdUser.data.UserId }, createdUser.data);
+            if (createdUser.InvalidPassword)
+                return BadRequest("Password is not strong enough");
+            return BadRequest("Email already exists");
         }
 
         [HttpPost("login")]
@@ -55,12 +57,15 @@ namespace WebAPIShop.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] UserDTO user, string password)
         {
-            bool isUpdateSuccessful = await _userService.UpdateUser(id, user, password);
-            if (!isUpdateSuccessful)
+            ResultValidUser<bool> isUpdateSuccessfulResult = await _userService.UpdateUser(id, user, password);
+            bool isUpdateSuccessful = isUpdateSuccessfulResult.data;
+            if (isUpdateSuccessful)
             {
-                return BadRequest("Password is not strong enough");
+                 return Ok();
             }
-            return Ok();
+            if (isUpdateSuccessfulResult.UserAlreadyExists)
+                return BadRequest("Email already exists");
+            return BadRequest("Password is not strong enough");
         }
     }
 }

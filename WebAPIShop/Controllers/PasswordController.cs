@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services;
+using Entities;
 
 namespace WebAPIShop.Controllers
 {

@@ -23,33 +23,52 @@ public class UserService : IUserService
         
     }
 
-    public async Task<UserDTO> AddUser(UserDTO user,string password)
+    public async Task<ResultValidUser<UserDTO>> AddUser(UserDTO user,string password)
     {
         Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
-            return null;
+            return new ResultValidUser<UserDTO>(true, false, null);
+        if (EmailExists(user.UserEmail, user.UserId).Result)
+            return new ResultValidUser<UserDTO>(false, true, null);
         User user1 = _mapper.Map<UserDTO, User>(user);
         user1.Password = password;
-        return _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
+        UserDTO user2= _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
+        ResultValidUser<UserDTO> resultValidUser= new ResultValidUser<UserDTO>(false, false, user2);
+        return resultValidUser;
     }
-    public async Task<bool> UpdateUser(int id, UserDTO user,string password)
+    public async Task<ResultValidUser<bool>> UpdateUser(int id, UserDTO user,string password)
     {
         Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
         {
-            return false;
+            return new ResultValidUser<bool>(true, false, false);
+        }
+        else if (EmailExists(user.UserEmail, id).Result)
+        {
+            return new ResultValidUser<bool>(false, true, false);
         }
         else
         {
             User user1 = _mapper.Map<UserDTO, User>(user);
             user1.UserId = id;
-            user1.Password=password;
+            user1.Password = password;
             await _userRepository.UpdateUser(user1);
-            return true;
+            return new ResultValidUser<bool>(false, false, true);
         }
     }
     public async Task<UserDTO> Login(LoginUserDTO loginUser)
     {
         return _mapper.Map<User, UserDTO>(await _userRepository.Login(loginUser.UserEmail, loginUser.UserPassword));
     }
+    
+    public async Task<bool> EmailExists(string email,int id)
+    {
+        User user = await _userRepository.GetUserByEmail(email);
+        if (user.UserId!=id && user != null)
+        {
+            return true;
+        }
+        return false;
+    }
+
 }

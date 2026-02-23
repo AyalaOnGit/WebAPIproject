@@ -41,9 +41,9 @@ namespace Repository
             await _ShopContext.SaveChangesAsync();
         }
 
-
-        public void DeleteUser(int id)
+        public async Task<User> GetUserByEmail(string email)
         {
+            return await _ShopContext.Users.FirstOrDefaultAsync(x => x.UserEmail == email);
         }
     }
 }
