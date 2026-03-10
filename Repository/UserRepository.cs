@@ -43,7 +43,7 @@ namespace Repository
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _ShopContext.Users.FirstOrDefaultAsync(x => x.UserEmail == email);
+            return await _ShopContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserEmail == email);
         }
     }
 }

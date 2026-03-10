@@ -37,6 +37,8 @@ namespace WebAPIShop.Controllers
                 return CreatedAtAction(nameof(Get), new { id = createdUser.data.UserId }, createdUser.data);
             if (createdUser.InvalidPassword)
                 return BadRequest("Password is not strong enough");
+            if (createdUser.IsValidEmail)
+                return BadRequest("Email is not valid");
             return BadRequest("Email already exists");
         }
 
@@ -65,6 +67,8 @@ namespace WebAPIShop.Controllers
             }
             if (isUpdateSuccessfulResult.UserAlreadyExists)
                 return BadRequest("Email already exists");
+            if (isUpdateSuccessfulResult.IsValidEmail)
+                return BadRequest("Email is not valid");
             return BadRequest("Password is not strong enough");
         }
     }

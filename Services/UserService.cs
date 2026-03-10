@@ -1,8 +1,9 @@
 ﻿namespace Services;
-using Entities;
-using DTOs;
-using Repository;
 using AutoMapper;
+using DTOs;
+using Entities;
+using Repository;
+using System.ComponentModel.DataAnnotations;
 
 public class UserService : IUserService
 {
@@ -25,27 +26,31 @@ public class UserService : IUserService
 
     public async Task<ResultValidUser<UserDTO>> AddUser(UserDTO user,string password)
     {
+        if (!IsValidEmail(user.UserEmail))
+            return new ResultValidUser<UserDTO>(false, false,true, null);
         Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
-            return new ResultValidUser<UserDTO>(true, false, null);
-        if (EmailExists(user.UserEmail, user.UserId).Result)
-            return new ResultValidUser<UserDTO>(false, true, null);
+            return new ResultValidUser<UserDTO>(true, false,false, null);
+        if (await EmailExists(user.UserEmail, user.UserId))
+            return new ResultValidUser<UserDTO>(false, true,false, null);
         User user1 = _mapper.Map<UserDTO, User>(user);
         user1.Password = password;
         UserDTO user2= _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
-        ResultValidUser<UserDTO> resultValidUser= new ResultValidUser<UserDTO>(false, false, user2);
+        ResultValidUser<UserDTO> resultValidUser= new ResultValidUser<UserDTO>(false, false,false, user2);
         return resultValidUser;
     }
     public async Task<ResultValidUser<bool>> UpdateUser(int id, UserDTO user,string password)
     {
+        if (!IsValidEmail(user.UserEmail))
+            return new ResultValidUser<bool>(false, false, true, false);
         Password passwordAfterCheck = _passwordService.CheckPassword(password);
         if (passwordAfterCheck.Level < 3)
         {
-            return new ResultValidUser<bool>(true, false, false);
+            return new ResultValidUser<bool>(true, false,false, false);
         }
-        else if (EmailExists(user.UserEmail, id).Result)
+        else if (await EmailExists(user.UserEmail, id))
         {
-            return new ResultValidUser<bool>(false, true, false);
+            return new ResultValidUser<bool>(false, true,false, false);
         }
         else
         {
@@ -53,7 +58,7 @@ public class UserService : IUserService
             user1.UserId = id;
             user1.Password = password;
             await _userRepository.UpdateUser(user1);
-            return new ResultValidUser<bool>(false, false, true);
+            return new ResultValidUser<bool>(false, false, false, true);
         }
     }
     public async Task<UserDTO> Login(LoginUserDTO loginUser)
@@ -69,5 +74,10 @@ public class UserService : IUserService
             return true;
         }
         return false;
+    }
+
+    public bool IsValidEmail(string email)
+    {
+        return new EmailAddressAttribute().IsValid(email);
     }
 }
