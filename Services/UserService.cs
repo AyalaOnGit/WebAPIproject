@@ -24,26 +24,26 @@ public class UserService : IUserService
         
     }
 
-    public async Task<ResultValidUser<UserDTO>> AddUser(UserDTO user,string password)
+    public async Task<ResultValidUser<UserDTO>> AddUser(UserWithPasswordDTO user)
     {
         if (!IsValidEmail(user.UserEmail))
             return new ResultValidUser<UserDTO>(false, false,true, null);
-        Password passwordAfterCheck = _passwordService.CheckPassword(password);
+        Password passwordAfterCheck = _passwordService.CheckPassword(user.UserPassword);
         if (passwordAfterCheck.Level < 3)
             return new ResultValidUser<UserDTO>(true, false,false, null);
         if (await EmailExists(user.UserEmail, user.UserId))
             return new ResultValidUser<UserDTO>(false, true,false, null);
-        User user1 = _mapper.Map<UserDTO, User>(user);
-        user1.Password = password;
+        User user1 = _mapper.Map<UserWithPasswordDTO, User>(user);
+        user1.Password = user.UserPassword;
         UserDTO user2= _mapper.Map<User, UserDTO>(await _userRepository.AddUser(user1));
         ResultValidUser<UserDTO> resultValidUser= new ResultValidUser<UserDTO>(false, false,false, user2);
         return resultValidUser;
     }
-    public async Task<ResultValidUser<bool>> UpdateUser(int id, UserDTO user,string password)
+    public async Task<ResultValidUser<bool>> UpdateUser(int id, UserWithPasswordDTO user)
     {
         if (!IsValidEmail(user.UserEmail))
             return new ResultValidUser<bool>(false, false, true, false);
-        Password passwordAfterCheck = _passwordService.CheckPassword(password);
+        Password passwordAfterCheck = _passwordService.CheckPassword(user.UserPassword);
         if (passwordAfterCheck.Level < 3)
         {
             return new ResultValidUser<bool>(true, false,false, false);
@@ -54,9 +54,9 @@ public class UserService : IUserService
         }
         else
         {
-            User user1 = _mapper.Map<UserDTO, User>(user);
+            User user1 = _mapper.Map<UserWithPasswordDTO, User>(user);
             user1.UserId = id;
-            user1.Password = password;
+            user1.Password = user.UserPassword;
             await _userRepository.UpdateUser(user1);
             return new ResultValidUser<bool>(false, false, false, true);
         }

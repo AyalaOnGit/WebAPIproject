@@ -22,3 +22,10 @@
 {"timestamp":"2026-03-10 17:09:55.5577","level":"Warn","message":"Order sum mismatch for user 30. Client sent: 550, Server calculated: 1135 😖","logger":"Services.OrderService"}
 {"timestamp":"2026-03-10 19:40:24.0798","level":"Warn","message":"Order sum mismatch for user 34. Client sent: 700, Server calculated: 1547 😖","logger":"Services.OrderService"}
 {"timestamp":"2026-03-10 19:44:42.5055","level":"Info","message":"Login attempted with User Name, yossi.levi@example.com and password K9#bV2!mP98qZ","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 16:57:46.4295","level":"Info","message":"Login attempted with User Name, adam@gmail.com and password asdgfg!@#$","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 16:59:15.8906","level":"Info","message":"Login attempted with User Name, hola@gmail.com and password asdgfg!@#$","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 16:59:55.0311","level":"Warn","message":"Order sum mismatch for user 27. Client sent: 30, Server calculated: 234 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-04-19 17:11:30.4714","level":"Info","message":"Login attempted with User Name, miriam@gmail.com and password !qaz@wsx##","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 17:57:09.4741","level":"Info","message":"Login attempted with User Name, miriam@gmail.com and password !qaz@wsx##","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 17:57:49.4230","level":"Info","message":"Login attempted with User Name, hola@gmail.com and password asdgfg!@#$","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-04-19 18:00:03.2038","level":"Info","message":"Login attempted with User Name, ayala@gmail.com and password asddfgg!@#$$","logger":"WebAPIShop.Controllers.UsersController"}

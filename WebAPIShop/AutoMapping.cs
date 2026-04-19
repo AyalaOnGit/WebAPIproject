@@ -9,6 +9,7 @@ namespace WebAPIShop
         public AutoMapping() 
         {
             CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<User, UserWithPasswordDTO>().ReverseMap();
             CreateMap<User, LoginUserDTO>();
             CreateMap<Order, OrderDTO>().ReverseMap();
             CreateMap<OrderItem, OrderItemDTO>().ReverseMap();

@@ -38,9 +38,10 @@ const update = async () => {
             UserEmail: userEmail.value,
             UserFirstName: firstName.value,
             UserLastName: lastName.value,
-            Password: password.value
+            userPassword: password.value
         }
-        const response = await fetch(`https://localhost:44324/api/Users/${theCurrentUser.userId}`, {
+        const url = new URL(`https://localhost:44324/api/Users/${theCurrentUser.userId}`)
+        const response = await fetch(url, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

@@ -66,9 +66,11 @@ const register = async () => {
                 UserEmail: userEmail.value,
                 UserFirstName: firstName.value,
                 UserLastName: lastName.value,
-                Password: password.value
-            }
-            const response = await fetch('https://localhost:44324/api/Users', {
+                UserPassword: password.value
+        }
+        const url = new URL('https://localhost:44324/api/Users')
+
+        const response = await fetch(url, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -94,8 +96,8 @@ const loginUserPassword = document.querySelector("#passwordR")
 const login = async () => {
     try {
         const loginUser = {
-            LoginUserEmail: loginUserEmail.value,
-            LoginUserPassword: loginUserPassword.value
+            UserEmail: loginUserEmail.value,
+            UserPassword: loginUserPassword.value
         }
         const response = await fetch('https://localhost:44324/api/Users/login', {
             method: 'POST',
