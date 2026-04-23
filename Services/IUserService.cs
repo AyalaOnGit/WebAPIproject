@@ -13,5 +13,6 @@ namespace Services
         Task<ResultValidUser<bool>> UpdateUser(int id, UserWithPasswordDTO user);
         Task<bool> EmailExists(string email,int id);
         bool IsValidEmail(string email);
+        Task InvalidateUserCache(int userId);
     }
 }
