@@ -28,14 +28,28 @@ public class UserService : IUserService
     public async Task<UserDTO> GetUserById(int id)
     {
         string cacheKey = $"user_{id}";
-        var cachedUser = await _cache.GetStringAsync(cacheKey);
-        if (cachedUser != null)
+
+        try
         {
-            return JsonSerializer.Deserialize<UserDTO>(cachedUser);
+            var cachedUser = await _cache.GetStringAsync(cacheKey);
+            if (cachedUser != null)
+            {
+                return JsonSerializer.Deserialize<UserDTO>(cachedUser);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Redis למטה? לא נורא, נדפיס הודעה ונמשיך ל-DB
+            Console.WriteLine($"Redis error on Get: {ex.Message}");
         }
 
         var user = _mapper.Map<User, UserDTO>(await _userRepository.GetUserById(id));
-        await SetCacheAsync(cacheKey, user);
+
+        if (user != null)
+        {
+            await SetCacheAsync(cacheKey, user);
+        }
+
         return user;
     }
 
@@ -100,18 +114,32 @@ public class UserService : IUserService
 
     public async Task InvalidateUserCache(int userId)
     {
-        string cacheKey = $"user_{userId}";
-        await _cache.RemoveAsync(cacheKey);
+        try
+        {
+            string cacheKey = $"user_{userId}";
+            await _cache.RemoveAsync(cacheKey);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Redis error on Invalidate: {ex.Message}");
+        }
     }
 
     private async Task SetCacheAsync(string cacheKey, UserDTO user)
     {
-        var ttlString = _configuration["Redis:TTL"];
-        var ttl = string.IsNullOrEmpty(ttlString) ? 3600 : int.Parse(ttlString);
-        var options = new DistributedCacheEntryOptions
+        try
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttl)
-        };
-        await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(user), options);
+            var ttlString = _configuration["Redis:TTL"];
+            var ttl = string.IsNullOrEmpty(ttlString) ? 3600 : int.Parse(ttlString);
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttl)
+            };
+            await _cache.SetStringAsync(cacheKey, JsonSerializer.Serialize(user), options);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Redis error on Set: {ex.Message}");
+        }
     }
 }

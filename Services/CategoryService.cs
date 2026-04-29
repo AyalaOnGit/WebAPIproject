@@ -25,26 +25,53 @@ public class CategoryService : ICategoryService
     }
     public async Task<List<CategoryDTO>> GetCategories()
     {
-        var cachedCategories = await _cache.GetStringAsync(CacheKey);
-        if (cachedCategories != null)
+        // 1. ניסיון שליפה מה-Cache עם הגנה
+        try
         {
-            return JsonSerializer.Deserialize<List<CategoryDTO>>(cachedCategories);
+            var cachedCategories = await _cache.GetStringAsync(CacheKey);
+            if (cachedCategories != null)
+            {
+                return JsonSerializer.Deserialize<List<CategoryDTO>>(cachedCategories);
+            }
+        }
+        catch (Exception ex)
+        {
+            // רישום ללוג שה-Cache לא זמין, אבל לא עוצרים את הריצה
+            Console.WriteLine($"Redis is unavailable: {ex.Message}");
         }
 
+        // 2. שליפה מה-Repository (תמיד יקרה אם ה-Cache ריק או אם Redis נפל)
         var categories = _mapper.Map<List<Category>, List<CategoryDTO>>(await _categoryRepository.GetCategories());
-        var ttlString = _configuration["Redis:TTL"];
-        var ttl = string.IsNullOrEmpty(ttlString) ? 3600 : int.Parse(ttlString);
-        var options = new DistributedCacheEntryOptions
+
+        // 3. ניסיון שמירה ב-Cache לפעם הבאה
+        try
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttl)
-        };
-        await _cache.SetStringAsync(CacheKey, JsonSerializer.Serialize(categories), options);
+            var ttlString = _configuration["Redis:TTL"];
+            var ttl = string.IsNullOrEmpty(ttlString) ? 3600 : int.Parse(ttlString);
+            var options = new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(ttl)
+            };
+            await _cache.SetStringAsync(CacheKey, JsonSerializer.Serialize(categories), options);
+        }
+        catch
+        {
+            // ממשיכים כרגיל גם אם השמירה נכשלה
+        }
+
         return categories;
     }
 
     public async Task InvalidateCategoryCache()
     {
-        await _cache.RemoveAsync(CacheKey);
+        try
+        {
+            await _cache.RemoveAsync(CacheKey);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to invalidate cache: {ex.Message}");
+        }
     }
 
 }

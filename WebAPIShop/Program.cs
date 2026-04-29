@@ -5,7 +5,8 @@ using NLog.Web;
 using PresidentsApp.Middlewares;
 using Repository;
 using Services;
-using WebAPIShop;   
+using WebAPIShop;
+using WebAPIShop.Extensions;
 using WebAPIShop.Middleware;    
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -35,7 +36,7 @@ builder.Host.UseNLog();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-
+builder.Services.AddCustomRateLimiter();
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
@@ -50,6 +51,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
+app.UseRateLimiter();
 
 app.UseErrorHandlingMiddleware();
 
