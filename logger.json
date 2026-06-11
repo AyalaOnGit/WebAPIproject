@@ -74,3 +74,11 @@
 {"timestamp":"2026-05-20 15:31:06.9872","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}
 {"timestamp":"2026-05-20 15:31:38.7900","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 20, Server calculated: 89 😖","logger":"Services.OrderService"}
 {"timestamp":"2026-05-20 15:31:39.0859","level":"Info","message":"Order 31 sent to Kafka topic 'orders'","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 18:00:32.1422","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-06-11 18:01:28.1588","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-06-11 18:02:08.0096","level":"Warn","message":"Order sum mismatch for user 42. Client sent: 22, Server calculated: 90 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 18:02:08.4619","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 5 | UserId: 42 | OrderId: 32 | Sum: 90","logger":"Services.KafkaProducerService"}
+{"timestamp":"2026-06-11 18:07:31.9574","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 26, Server calculated: 180 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 18:07:31.9924","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 6 | UserId: 43 | OrderId: 33 | Sum: 180","logger":"Services.KafkaProducerService"}
+{"timestamp":"2026-06-11 18:08:57.5438","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 26, Server calculated: 270 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 18:08:57.5805","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 7 | UserId: 43 | OrderId: 34 | Sum: 270","logger":"Services.KafkaProducerService"}

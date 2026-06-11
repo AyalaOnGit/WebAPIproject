@@ -58,7 +58,7 @@ services:
       - ConnectionStrings__new_connection=Data Source=sqlserver;Initial Catalog=_API_shop;User ID=sa;Password=Your_password123;Trust Server Certificate=True
       - ConnectionStrings__Redis=redis:6379,password=yourpassword
       - Kafka__BootstrapServers=kafka:9092
-      - Kafka__Topic=orders
+      - Kafka__OrderTopic=orders
     depends_on:
       - redis
       - kafka
@@ -70,7 +70,7 @@ services:
       dockerfile: KafkaConsumer/Dockerfile
     environment:
       - Kafka__BootstrapServers=kafka:9092
-      - Kafka__Topic=orders
+      - Kafka__OrderTopic=orders
     depends_on:
       - kafka
 

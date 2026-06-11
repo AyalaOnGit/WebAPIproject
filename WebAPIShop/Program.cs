@@ -25,6 +25,7 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IRatingService, RatingService>();
 builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddSingleton<IKafkaProducerService, KafkaProducerService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

@@ -39,7 +39,7 @@ public partial class db_shopContext : DbContext
             entity.Property(e => e.CategoryName)
                 .IsRequired()
                 .HasMaxLength(50)
-                .IsUnicode(false)
+                .IsUnicode(true)
                 .HasColumnName("CATEGORY_NAME");
         });
 
