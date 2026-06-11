@@ -85,13 +85,13 @@ public partial class db_shopContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("PRODUCT_ID");
             entity.Property(e => e.CategoryId).HasColumnName("CATEGORY_ID");
             entity.Property(e => e.Description)
-                .IsUnicode(false)
+                .IsUnicode(true)
                 .HasColumnName("DESCRIPTION");
             entity.Property(e => e.Price).HasColumnName("PRICE");
             entity.Property(e => e.ProductName)
                 .IsRequired()
                 .HasMaxLength(50)
-                .IsUnicode(false)
+                .IsUnicode(true)
                 .HasColumnName("PRODUCT_NAME");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)

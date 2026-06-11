@@ -1,4 +1,16 @@
-﻿const userEmail = document.querySelector("#userName")
+const fetchWithRetry = async (url, options, retries = 3, delayMs = 1000) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.status !== 503 && response.status !== 429) return response;
+        } catch (err) {
+            if (i === retries - 1) throw err;
+        }
+        await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+    }
+}
+
+const userEmail = document.querySelector("#userName")
 const firstName = document.querySelector("#firstName")
 const lastName = document.querySelector("#lastName")
 const password = document.querySelector("#password")
@@ -24,11 +36,9 @@ const CheckPassword = async () => {
             ThePassword: password.value,
             Level: 0
         };
-        const response = await fetch('https://localhost:44324/api/Password', {
+        const response = await fetchWithRetry('https://localhost:44324/api/Password', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(Password)
         });
         if (response.ok) {
@@ -70,11 +80,9 @@ const register = async () => {
         }
         const url = new URL('https://localhost:44324/api/Users')
 
-        const response = await fetch(url, {
+        const response = await fetchWithRetry(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify(newUser)
             });
@@ -100,11 +108,9 @@ const login = async () => {
             UserEmail: loginUserEmail.value,
             UserPassword: loginUserPassword.value
         }
-        const response = await fetch('https://localhost:44324/api/Users/login', {
+        const response = await fetchWithRetry('https://localhost:44324/api/Users/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(loginUser)
         });

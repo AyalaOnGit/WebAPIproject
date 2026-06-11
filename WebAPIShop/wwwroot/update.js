@@ -1,4 +1,16 @@
-﻿const welcomeText = document.querySelector(".greeting")
+const fetchWithRetry = async (url, options, retries = 3, delayMs = 1000) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url, options);
+            if (response.status !== 503 && response.status !== 429) return response;
+        } catch (err) {
+            if (i === retries - 1) throw err;
+        }
+        await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+    }
+}
+
+const welcomeText = document.querySelector(".greeting")
 welcomeText.innerHTML = `שלום ${JSON.parse(sessionStorage.getItem('currentUser')).userFirstName} <br> !התחברת בהצלחה`
 
 const updateBox = document.querySelector(".updateBox")
@@ -41,11 +53,9 @@ const update = async () => {
             UserPassword: password.value
         }
         const url = new URL(`https://localhost:44324/api/Users/${theCurrentUser.userId}`)
-        const response = await fetch(url, {
+        const response = await fetchWithRetry(url, {
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
             body: JSON.stringify(updateUser)
         });
