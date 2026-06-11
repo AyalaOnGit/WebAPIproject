@@ -1,0 +1,14 @@
+[{
+  "_id": 1,
+  "host": "localhost:44324",
+  "method": "GET",
+  "path": "/favicon.ico",
+  "recordDate": "2026-02-22T00:12:25.043Z"
+},
+{
+  "_id": 2,
+  "host": "localhost:44324",
+  "method": "GET",
+  "path": "/openapi/v1.json",
+  "recordDate": "2026-02-22T00:12:29.957Z"
+}]

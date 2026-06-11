@@ -1,0 +1,24 @@
+[{
+  "_id": 1,
+  "categoryName": "לבית ולמטבח"
+},
+{
+  "_id": 2,
+  "categoryName": "טקסטיל"
+},
+{
+  "_id": 3,
+  "categoryName": "אופנה"
+},
+{
+  "_id": 4,
+  "categoryName": "אביזרים וציוד משרדי"
+},
+{
+  "_id": 5,
+  "categoryName": "פנאי ונוי"
+},
+{
+  "_id": 6,
+  "categoryName": "מתנות ומשחקים"
+}]

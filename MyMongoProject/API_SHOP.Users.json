@@ -1,0 +1,42 @@
+[{
+  "_id": 26,
+  "userEmail": "israel@example.com",
+  "userFirstName": "ישראל",
+  "userLastName": "ישראלי",
+  "password": "hashed_password_26"
+},
+{
+  "_id": 30,
+  "userEmail": "sivan.l@example.com",
+  "userFirstName": "סיון",
+  "userLastName": "לוי",
+  "password": "hashed_password_30"
+},
+{
+  "_id": 34,
+  "userEmail": "david.c@example.com",
+  "userFirstName": "דוד",
+  "userLastName": "כהן",
+  "password": "hashed_password_34"
+},
+{
+  "_id": 40,
+  "userEmail": "michal.r@example.com",
+  "userFirstName": "מיכל",
+  "userLastName": "רונן",
+  "password": "hashed_password_40"
+},
+{
+  "_id": 45,
+  "userEmail": "noam.b@example.com",
+  "userFirstName": "נועם",
+  "userLastName": "ברק",
+  "password": "hashed_password_45"
+},
+{
+  "_id": 50,
+  "userEmail": "rivka.a@example.com",
+  "userFirstName": "רבקה",
+  "userLastName": "אברהם",
+  "password": "hashed_password_50"
+}]

@@ -89,3 +89,4 @@
 {"timestamp":"2026-06-11 20:44:50.4633","level":"Warn","message":"Kafka unavailable, order saved without event: Local: Message timed out","logger":"Services.OrderService"}
 {"timestamp":"2026-06-11 20:46:43.1817","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 30, Server calculated: 325 😖","logger":"Services.OrderService"}
 {"timestamp":"2026-06-11 20:46:43.2895","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 9 | UserId: 43 | OrderId: 37 | Sum: 325","logger":"Services.KafkaProducerService"}
+{"timestamp":"2026-06-12 00:39:33.7176","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}

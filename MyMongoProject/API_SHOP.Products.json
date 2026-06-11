@@ -1,0 +1,90 @@
+[{
+  "_id": 1,
+  "productName": "קרש חיתוך מעץ אלון יוקרתי",
+  "price": 149,
+  "description": "קרש חיתוך עמיד ואיכותי העשוי מעץ אלון מלא...",
+  "category": {
+    "categoryId": 1,
+    "categoryName": "לבית ולמטבח"
+  }
+},
+{
+  "_id": 2,
+  "productName": "סט תחתיות לכוסות משעם",
+  "price": 45,
+  "description": "סט של 6 תחתיות טבעיות...",
+  "category": {
+    "categoryId": 1,
+    "categoryName": "לבית ולמטבח"
+  }
+},
+{
+  "_id": 3,
+  "productName": "ספל מאג קרמי עם כיתוב מוזהב",
+  "price": 39,
+  "description": "ספל קפה קלאסי בגימור מט...",
+  "category": {
+    "categoryId": 1,
+    "categoryName": "לבית ולמטבח"
+  }
+},
+{
+  "_id": 4,
+  "productName": "שטיח כניסה לבית בעיצוב אישי",
+  "price": 89,
+  "description": "שטיח ברוכים הבאים עשוי סיבי קוקוס...",
+  "category": {
+    "categoryId": 1,
+    "categoryName": "לבית ולמטבח"
+  }
+},
+{
+  "_id": 5,
+  "productName": "קופסת עץ ליין עם חריטה",
+  "price": 65,
+  "description": "קופסת אחסון מהודרת...",
+  "category": {
+    "categoryId": 2,
+    "categoryName": "טקסטיל"
+  }
+},
+{
+  "_id": 11,
+  "productName": "עט מתכת יוקרתי עם חריטת שם",
+  "price": 79,
+  "description": "עט נובע או עט כדורי בגימור כרום...",
+  "category": {
+    "categoryId": 3,
+    "categoryName": "אופנה"
+  }
+},
+{
+  "_id": 15,
+  "productName": "מגבת גוף עם רקמה אישית",
+  "price": 75,
+  "description": "מגבת רחצה גדולה ומפנקת...",
+  "category": {
+    "categoryId": 4,
+    "categoryName": "אביזרים וציוד משרדי"
+  }
+},
+{
+  "_id": 21,
+  "productName": "חולצת T-shirt עם כיתוב מקורי",
+  "price": 55,
+  "description": "חולצת כותנה בגזרה נוחה...",
+  "category": {
+    "categoryId": 5,
+    "categoryName": "פנאי ונוי"
+  }
+},
+{
+  "_id": 9,
+  "productName": "פאזל עץ סיבות למה אני אוהב אותך",
+  "price": 110,
+  "description": "פאזל עץ בעיצוב אישי ומיוחד...",
+  "category": {
+    "categoryId": 6,
+    "categoryName": "מתנות ומשחקים"
+  }
+}]
