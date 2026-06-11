@@ -82,3 +82,10 @@
 {"timestamp":"2026-06-11 18:07:31.9924","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 6 | UserId: 43 | OrderId: 33 | Sum: 180","logger":"Services.KafkaProducerService"}
 {"timestamp":"2026-06-11 18:08:57.5438","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 26, Server calculated: 270 😖","logger":"Services.OrderService"}
 {"timestamp":"2026-06-11 18:08:57.5805","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 7 | UserId: 43 | OrderId: 34 | Sum: 270","logger":"Services.KafkaProducerService"}
+{"timestamp":"2026-06-11 20:36:38.7541","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-06-11 20:37:17.1252","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 30, Server calculated: 117 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 20:44:13.7583","level":"Info","message":"Login attempted with User Name, sara.cohen@example.com and password sara.cohen@example","logger":"WebAPIShop.Controllers.UsersController"}
+{"timestamp":"2026-06-11 20:44:46.1229","level":"Warn","message":"Order sum mismatch for user 42. Client sent: 30, Server calculated: 356 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 20:44:50.4633","level":"Warn","message":"Kafka unavailable, order saved without event: Local: Message timed out","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 20:46:43.1817","level":"Warn","message":"Order sum mismatch for user 43. Client sent: 30, Server calculated: 325 😖","logger":"Services.OrderService"}
+{"timestamp":"2026-06-11 20:46:43.2895","level":"Info","message":"Order event published → Topic: orders | Partition: 0 | Offset: 9 | UserId: 43 | OrderId: 37 | Sum: 325","logger":"Services.KafkaProducerService"}
