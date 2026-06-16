@@ -25,7 +25,7 @@ namespace Repository
 
         public async Task<List<Order>> GetAllOrders()
         {
-            return await _ShopContext.Orders.Include(o => o.OrderItems).ToListAsync();
+            return await _ShopContext.Orders.Include(o => o.OrderItems).Take(100).ToListAsync();
         }
 
     }
