@@ -35,12 +35,21 @@ public class KafkaProducerService : IKafkaProducerService, IDisposable
             Value = JsonSerializer.Serialize(order)
         };
 
-        var result = await _producer.ProduceAsync(_topic, message);
+        try
+        {
+            var result = await _producer.ProduceAsync(_topic, message);
 
-        _logger.LogInformation(
-            "Order event published → Topic: {Topic} | Partition: {Partition} | Offset: {Offset} | UserId: {UserId} | OrderId: {OrderId} | Sum: {Sum}",
-            result.Topic, result.Partition.Value, result.Offset.Value,
-            order.UserId, order.OrderId, order.OrderSum);
+            _logger.LogInformation(
+                "Order event published → Topic: {Topic} | Partition: {Partition} | Offset: {Offset} | UserId: {UserId} | OrderId: {OrderId} | Sum: {Sum}",
+                result.Topic, result.Partition.Value, result.Offset.Value,
+                order.UserId, order.OrderId, order.OrderSum);
+        }
+        catch (ProduceException<string, string> ex)
+        {
+            _logger.LogError(ex, "Failed to publish Order {OrderId} to Kafka topic '{Topic}'",
+                order.OrderId, _topic);
+            throw;
+        }
     }
 
     public void Dispose()
